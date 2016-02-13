@@ -3,12 +3,11 @@ Les commits effectués.
 
 Les objectifs pour le 10 février:
   installation SDL et libxml2
-  Afichage d'une image
   (Affichage de Hello World)
   
   Fait:
   installation SDL et libxml2
-  Afiichage d'une image
+  Afichage d'une image
   
   Non fait:
   (Affichage de Hello World)
