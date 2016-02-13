@@ -1,6 +1,10 @@
-Semaine du 03 février
+Semaine du 03 février:
 Les commits effectués.
-Les objectifs du 10 février:
-  installation SDL et libxml2
-  (Afiichage hello world)
+
+Les objectifs pour le 10 février:
+  installation SDL et libxml2(fait)
+  Afiichage d'une image(fait)
+  
+Les objectifs pour le 17 fevrier!
+Affichage de "Hello World"
   
