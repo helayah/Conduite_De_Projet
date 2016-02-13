@@ -10,7 +10,7 @@ Les objectifs pour le 10 février:
   Afichage d'une image
   
   Non fait:
-  (Affichage de Hello World)
+  Affichage de Hello World
   
 Les objectifs pour le 17 fevrier:
 
