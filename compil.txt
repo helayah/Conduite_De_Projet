@@ -1,0 +1,11 @@
+-I/usr/include/libxml2 -lxml2
+-L./lib -I./include -lSDL2-2.0
+
+gcc -Wall -Wextra source.c -o main -L./lib -I./include e
+
+
+
+usr\x86_64-w64-mingw32\sys-root\mingw
+
+-I./usr/x86_64-w64-mingw32/sys-root/mingw/include/SDL2
+-L./usr/x86_64-w64-mingw32/sys-root/mingw/lib
