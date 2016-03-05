@@ -3,7 +3,7 @@
 
 #include "libs.h"
 #include <SDL2/SDL.h>
-
+//#include <SDL/SDL.h>
 void rest();
 
 #endif
