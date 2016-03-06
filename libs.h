@@ -12,4 +12,7 @@
 #define FAILURE -1
 #define SUCCESS 0
 
+const int WIDTH  = 640;
+const int HEIGHT = 480;
+
 #endif
