@@ -1,10 +1,10 @@
 #ifndef DRAW_INCLUDED_H
 #define DRAW_INCLUDED_H
 
-#include "libs.h"
+#include "objs.h"
+#include "interface.h"
+#include <math.h>
 
-
-
-
+int draw(root* node);
 
 #endif
