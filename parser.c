@@ -1,213 +1,210 @@
 #include "parser.h"
-#include "objs.h"
 
-void parcours_prefixe(xmlNodePtr noeud, fct_parcours_t f) {
-   /* xmlNodePtr n;
-    int i = 0;
-    for (n = noeud; n != NULL; n = n->next) {
-        f(n);
-        if ((n->type == XML_ELEMENT_NODE) && (n->children != NULL)) {
-            parcours_prefixe(n->children, f);
-        }
-        i++;
-    }*/
+extern root* Root;
+
+int Root_GetSizeAndBound(xmlNodePtr node)
+{
+	bounds b;
+	xmlChar *minlat, *minlon, *maxlat, *maxlon;
+	uint32_t nb_node = 0, nb_way = 0;
+	
+	node = node->children;
+	node = node->next;
+			
+	if (strcmp((const char *) node->name, "bounds") == 0)
+    {
+		minlat = xmlGetProp(node, (const xmlChar *) "minlat");
+        minlon = xmlGetProp(node, (const xmlChar *) "minlon");
+        maxlat = xmlGetProp(node, (const xmlChar *) "maxlat");
+        maxlon = xmlGetProp(node, (const xmlChar *) "maxlon");
+		
+		b.minlat = (double)atof((char *)minlat);
+		b.minlon = (double)atof((char *)minlon);
+		b.maxlat = (double)atof((char *)maxlat);
+		b.maxlon = (double)atof((char *)maxlon);
+		
+		xmlFree(minlat);
+        xmlFree(minlon);
+		xmlFree(maxlat);
+		xmlFree(maxlon);
+		
+		while(node != NULL)
+		{
+			if (strcmp((const char *) node->name, "way") == 0)
+				nb_way++;
+			else
+				if (strcmp((const char *) node->name, "node") == 0)
+					nb_node++;
+			
+			node = node->next;
+		}
+		Root = Root_Init(nb_node, nb_way, &b);
+
+		return SUCCESS;
+	}
+	return FAILURE;
 }
 
-void afficher_noeud(xmlNodePtr noeud) {
-    /*if (noeud->type == XML_ELEMENT_NODE) {
-        xmlChar *chemin = xmlGetNodePath(noeud);
-        if (noeud->children != NULL && noeud->children->type == XML_TEXT_NODE) {
-            xmlChar *contenu = xmlNodeGetContent(noeud);
-            printf("%s -> %s\n", chemin, contenu);
-            xmlFree(contenu);
-        } else {
-            printf("%s\n", chemin);
-        }
-        xmlFree(chemin);
-    }*/
+int Root_GetNodes(xmlNodePtr node, int index)
+{
+	xmlNodePtr child;
+    xmlChar *idNode, *lat, *lon, *user, *uid, *version, *visible, *changeset, *timestamp;
+    xmlChar *idWay, *ref;
+    node_t* n = NULL;
+	long l;
+	
+    while(node != NULL)
+    {	
+    	if (!xmlStrcmp(node->name, (const xmlChar *) "node"))
+		{
+			idNode = xmlGetProp(node, (const xmlChar *) "id");
+			lat = xmlGetProp(node, (const xmlChar *) "lat");
+			lon = xmlGetProp(node, (const xmlChar *) "lon");
+			
+			n = Node_Init((uint32_t)strtoul((char *)idNode, NULL, 0), (double)atof((char *)lat), (double)atof((char *)lon));
+			Root->arrayNode[index++] = n;
+			
+			xmlFree(idNode);
+			xmlFree(lat);
+			xmlFree(lon);
+		}
+
+		if ((node->type == XML_ELEMENT_NODE) && (node->children != NULL))
+		{
+			Root_GetNodes(node->children, index);
+    	}
+		
+        node = node->next;
+    }
+	
+    return SUCCESS;
 }
 
-void dfs(xmlNodePtr node)
-{/*
-	node = node->xmlChildrenNode;
+int Root_GetWays(xmlNodePtr node, int index_way, int index_ref)
+{
+	xmlChar *idWay, *ref, *k, *v;
 	
 	while(node != NULL)
 	{
-	    if (node->children != NULL && node->children->type == XML_TEXT_NODE)
-        {
-            
-            
-            
-        }
-		node->next;
-	}*/
+		if(!xmlStrcmp(node->name, (const xmlChar *) "way"))
+		{
+			idWay = xmlGetProp(node, (const xmlChar *) "id");
+			Root->arrayWays[index_way++] = Ways_Init((uint32_t)strtoul((char *)idWay, NULL, 0), (int)xmlChildElementCount(node));
+			xmlFree(idWay);
+		}
+		
+		
+		if(!xmlStrcmp(node->name, (const xmlChar *) "nd") && !xmlStrcmp(node->parent->name, (const xmlChar *) "way"))
+		{
+			ref = xmlGetProp(node, (const xmlChar *) "ref");
+			Root->arrayWays[index_way - 1]->ref[index_ref++] = (uint32_t)strtoul((char *)ref, NULL, 0);
+			xmlFree(ref);
+		}
+		
+		if(!xmlStrcmp(node->name, (const xmlChar *) "tag") && !xmlStrcmp(node->parent->name, (const xmlChar *) "way"))
+		{
+			k = xmlGetProp(node, (const xmlChar *) "k");
+			v = xmlGetProp(node, (const xmlChar *) "v");	
+			
+			if(!xmlStrcmp(k, (const xmlChar *) "building"))
+			{
+				Root->arrayWays[index_way - 1]->type = BUILDING;
+			}
+			
+			if(!xmlStrcmp(k, (const xmlChar *) "leisure"))
+			{
+				Root->arrayWays[index_way - 1]->type = LEISURE;
+			}
+			
+			if(!xmlStrcmp(k, (const xmlChar *) "waterway"))
+			{
+				Root->arrayWays[index_way - 1]->type = WATERWAY;
+			}
+			
+			if(!xmlStrcmp(k, (const xmlChar *) "highway"))
+			{
+				Root->arrayWays[index_way - 1]->type = HIGHWAY;
+			}
+			
+			xmlFree(k);
+			xmlFree(v);
+		}
+	
+		if ((node->type == XML_ELEMENT_NODE) && (node->children != NULL))
+		{
+			Root_GetWays(node->children, index_way, index_ref);
+    	}
+    	
+		node = node->next;
+	}
+
+
+	return SUCCESS;
 }
 
-struct node_t* node_children(xmlNodePtr node)
-{
-    struct node_t *root = NULL;
-    xmlChar *id, *lat, *lon, *user, *uid, *version, *visible, *changeset, *timestamp;
-    
-    node = node->xmlChildrenNode;
-    root = malloc(sizeof(struct node_t *));
-    
-    while(node != NULL)
-    {
-        if (strcmp((const char *) node->name, "node") == 0)
-        {
-            id = xmlGetProp(node, (const xmlChar *) "id");
-            lat = xmlGetProp(node, (const xmlChar *) "lat");
-            lon = xmlGetProp(node, (const xmlChar *) "lon");
-            user = xmlGetProp(node, (const xmlChar *) "user");
-            uid = xmlGetProp(node, (const xmlChar *) "uid");
-            version = xmlGetProp(node, (const xmlChar *) "version");
-            visible = xmlGetProp(node, (const xmlChar *) "visible");
-            changeset = xmlGetProp(node, (const xmlChar *) "changeset");
-            timestamp = xmlGetProp(node, (const xmlChar *) "timestamp");
-            
-            printf("id = %s\n", (char *) id);
-            break;
-            xmlFree(id);
-            xmlFree(lat);
-            xmlFree(lon);
-            xmlFree(user);
-            xmlFree(uid);
-            xmlFree(version);
-            xmlFree(visible);
-            xmlFree(changeset);
-            xmlFree(timestamp);
-        }
-        node = node->next;
-    }
-    
-    return root;
-}
 
-int parse(char *str)
+int parse(char *file)
 {
 	xmlDocPtr doc;
-  	xmlNodePtr root;
-    struct node_t* node = NULL;
-  	//xmlXPathContextPtr context;
-	//xmlXPathObjectPtr result;
-    int i = 1;
+  	xmlNodePtr nodePtr;
     
-	if((doc = xmlParseFile(str)) == NULL)
+	if((doc = xmlParseFile(file)) == NULL)
 	{
-		
+		fprintf(stdout, "%s\n", PARSE_FILE_FAILURE);
 		return FAILURE;
 	}
-	
-	if((root = xmlDocGetRootElement(doc)) == NULL)
-	{
 
+	if((nodePtr = xmlDocGetRootElement(doc)) == NULL)
+	{
+		fprintf(stdout, "%s\n", GET_ROOT_ELEMENT_FAILURE);
 		xmlFreeDoc(doc);
 		return FAILURE;
 	}
 	
-    if((node = node_children(root)) == NULL)
+	if (xmlStrcmp(nodePtr->name, (const xmlChar *) "osm"))
+	{
+		fprintf(stdout, "%s\n", NOT_AN_OS_FILE);
+		xmlFreeDoc(doc);
+		return FAILURE;
+	}
+	
+	if(Root_GetSizeAndBound(nodePtr) == FAILURE)
     {
+		fprintf(stdout, "%s\n", GET_SIZE_AND_BOUND);
+        xmlFreeDoc(doc);
+		return FAILURE;
+    }
+
+	if((nodePtr = xmlDocGetRootElement(doc)) == NULL)
+	{
+		fprintf(stdout, "%s\n", PARSING_FAILURE);
+		xmlFreeDoc(doc);
+		return FAILURE;
+	}
+
+	if(Root_GetNodes(nodePtr, 0) == FAILURE)
+    {
+		fprintf(stdout, "%s\n", ROOT_GET_FAILURE);
+        xmlFreeDoc(doc);
+		return FAILURE;
+    }
+    
+    if((nodePtr = xmlDocGetRootElement(doc)) == NULL)
+	{
+		fprintf(stdout, "%s\n", PARSING_FAILURE);
+		xmlFreeDoc(doc);
+		return FAILURE;
+	}
+    
+    if(Root_GetWays(nodePtr, 0, 0) == FAILURE)
+    {
+		fprintf(stdout, "%s\n", ROOT_GET_FAILURE);
         xmlFreeDoc(doc);
 		return FAILURE;
     }
 	
-	//parcours_prefixe(root, afficher_noeud);
-	
-	/*
-	xmlChar *key;
-	//child = root->xmlChildrenNode;
-	key = xmlNodeListGetString(doc, root->xmlChildrenNode, 1);
-	printf("keyword: %s\n", key);
-	xmlFree(key);
-	
-	
-	while(child != NULL)
-	{
-		if(i == 10)
-			break;
-			
-		printf("%s\n", child->name);
-		i++;
-		
-		child->next;
-	}*/
-	
-
-
-	/*
-	if(xmlStrcmp(root->name, (const xmlChar *) "osm"))
-	{
-		xmlFreeDoc(doc);
-		return FAILURE;
-	}
-	
-	xmlNodeGetContent(root);
-	*/
-	printf("Node = %d\n", i);
-	free(node);
 	xmlFreeDoc(doc);
 
-
 	return SUCCESS;
 }
 
-
-/*
-int parse(char *str)
-{
-	FILE* file = NULL;
-
-	xmlFileOpen(str);
-	
-
-	if (read_xml(str) == FAILURE)
-	{
-		fprintf(stderr, "%s\n", READ_XML_FAILURE);
-		return FAILURE;
-	}
-	if ((file = fopen(str, "r")) == NULL)
-	{
-		fprintf(stderr, "%s\n", strerror(errno));
-		return FAILURE;
-	}
-
-	if (xmlFileClose(str) == FAILURE)
-	{
-		fprintf(stderr, "%s\n", strerror(errno));
-		return FAILURE;
-	}
-
-	if (fclose(file) == FAILURE)
-	{
-		fprintf(stderr, "%s\n", strerror(errno));
-		return FAILURE;
-	}
-
-	return SUCCESS;
-}
-*/
-
-/*
-int read_xml(char* name)
-{
-	xmlTextReaderPtr* reader = NULL;
-
-	if ((reader = xmlReaderForFile(name, "utf-8", 0)) == NULL)
-	{
-		fprintf(stderr, "%s\n", strerror(errno));
-		return FAILURE;
-	}
-
-	if (xmlTextReaderClose(reader) == FAILURE)
-	{
-		fprintf(stderr, "%s\n", strerror(errno));
-		return FAILURE;
-	}
-
-	
-}
-
-int write_xml(char* name)
-{
-	xmlTextWriterPtr writer;
-}*/

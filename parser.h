@@ -3,6 +3,7 @@
 
 #include "libs.h"
 #include "errs.h"
+#include "objs.h"
 
 #include <libxml/parser.h>
 #include <libxml/tree.h>
@@ -10,13 +11,10 @@
 #include <sys/types.h>
 #include <fcntl.h>
 
-typedef void (*fct_parcours_t)(xmlNodePtr);
+int Root_GetSizeAndBound(xmlNodePtr node);
+int Root_GetNodes(xmlNodePtr node, int index);
+int Root_GetWays(xmlNodePtr node, int index_way, int index_ref);
 
-void parcours_prefixe(xmlNodePtr noeud, fct_parcours_t f);
-void afficher_noeud(xmlNodePtr noeud);
-
-struct node_t* node_children(xmlNodePtr node);
-
-int parse(char* str);
+int parse(char* file);
 
 #endif

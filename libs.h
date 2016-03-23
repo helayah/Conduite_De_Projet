@@ -7,12 +7,11 @@
 #include <string.h>
 #include <errno.h>
 #include <time.h>
+#include <inttypes.h>
+#include <sys/types.h>
 
 #define ENCODING "UTF-8"
 #define FAILURE -1
 #define SUCCESS 0
-
-const int WIDTH  = 640;
-const int HEIGHT = 480;
 
 #endif

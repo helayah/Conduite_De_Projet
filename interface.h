@@ -3,7 +3,9 @@
 
 #include "libs.h"
 #include <SDL2/SDL.h>
-//#include <SDL/SDL.h>
+
+#define DELAY_TIME 5000
+
 void rest();
 
 #endif

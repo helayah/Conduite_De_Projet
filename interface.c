@@ -1,6 +1,6 @@
-#include "libs.h"
 #include "interface.h"
 
+extern SDL_Renderer* pRenderer;
 void rest()
 {
 	SDL_Event event;
@@ -13,5 +13,6 @@ void rest()
 		case SDL_QUIT:
 			return;
 		}
+
 	}
 }
