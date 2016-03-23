@@ -23,7 +23,7 @@ int distanceCalculation(double lat1, double lon1, double lat2, double lon2)
 //TODO : Aucun parametre
 void draw(ways* way)
 {
-	int i, index = 1, comp = 0;
+	int i, index = 1, compt = 0;
 	int16_t *arrayX, *arrayY;
 	double lon, lat;
 	
@@ -51,10 +51,10 @@ void draw(ways* way)
 				if(lat > Root->dimension->maxlat)
 					lat = Root->dimension->maxlat;
 
-				arrayX[comp]=(int16_t)distanceCalculation(lat, lon, lat, Root->dimension->minlon);
-				arrayY[comp]=(int16_t)distanceCalculation(lat, lon, Root->dimension->maxlat, lon);
+				arrayX[compt]=(int16_t)distanceCalculation(lat, lon, lat, Root->dimension->minlon);
+				arrayY[compt]=(int16_t)distanceCalculation(lat, lon, Root->dimension->maxlat, lon);
 	
-				comp++;
+				compt++;
 			}
 		}
 	}
@@ -65,18 +65,18 @@ void draw(ways* way)
 
 			break;
 	case BUILDING:
-			filledPolygonRGBA(pRenderer, arrayX, arrayY, comp, 191, 174, 174, 100);
-			polygonRGBA(pRenderer, arrayX, arrayY, comp, 0, 0, 0, 255);
+			filledPolygonRGBA(pRenderer, arrayX, arrayY, compt, 191, 174, 174, 100);
+			polygonRGBA(pRenderer, arrayX, arrayY, compt, 0, 0, 0, 255);
 			break;
 	case HIGHWAY:
-			//filledPolygonRGBA(pRenderer, arrayX, arrayY, comp, 100, 100, 100, 100);
-			//polygonRGBA(pRenderer, arrayX, arrayY, comp, 0, 0, 0, 255);
+			//filledPolygonRGBA(pRenderer, arrayX, arrayY, compt, 100, 100, 100, 100);
+			//polygonRGBA(pRenderer, arrayX, arrayY, compt, 0, 0, 0, 255);
 			break;
 	case WATERWAY:
-			filledPolygonRGBA(pRenderer, arrayX, arrayY, comp, 181, 208, 208, 255);
+			filledPolygonRGBA(pRenderer, arrayX, arrayY, compt, 181, 208, 208, 255);
 			break;
 	case LEISURE:
-			filledPolygonRGBA(pRenderer, arrayX, arrayY, comp, 197, 240, 197, 255);
+			filledPolygonRGBA(pRenderer, arrayX, arrayY, compt, 197, 240, 197, 255);
 			break;
 	case LANDUSE:
 			break;
