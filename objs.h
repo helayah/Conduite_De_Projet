@@ -3,6 +3,7 @@
 
 #include "libs.h"
 
+<<<<<<< HEAD
 #define UNKNOW 		-1
 #define BUILDING 	(1 << 0)
 #define HIGHWAY 	(1 << 1)
@@ -12,6 +13,8 @@
 #define RAILWAY 	(1 << 6)
 #define BRIDGE 		(1 << 7)
 
+=======
+>>>>>>> origin/master
 typedef unsigned int type_t;
 
 typedef struct position {
@@ -64,11 +67,17 @@ root* Root_AddWay(root* r, ways* way);
 root* Root_Init(int size_node, int size_way, bounds* b);
 node_t* Node_Init(uint32_t id, double lat, double lon);
 ways* Ways_Init(uint32_t id, int size);
+<<<<<<< HEAD
 node_t* Root_GetNode(root* node, int length, uint32_t reference);
 
 void Root_Display(root* node);
 void Way_Display(ways* way);
 void Ref_Display(uint32_t* ref, int size);
+=======
+node_t* getNode(node_t** node, int length, uint32_t reference);
+
+void Root_Display(root* node);
+>>>>>>> origin/master
 void Node_Display(node_t* node);
 void Bound_Display(bounds* b);
 #endif
