@@ -1,29 +1,26 @@
-#ifndef OPERATION_INCLUDED_H
-#define OPERATION_INCLUDED_H
+#ifndef OPERATIONS_INCLUDED_H
+#define OPERATIONS_INCLUDED_H
 
 #include "libs.h"
-#include "errs.h"
 #include "objs.h"
-#include "interface.h"
-#include <math.h>
+#include "map.h"
 
-#define PI 3.14
-#define DEFAULT_INDEX -1
+//#define EARTH_RADIUS 6371 //km
+#define EARTH_RADIUS 6378137
+#define COMPUTE (M_PI / 180)
 
+inline int mod(int x, int div);
 double deg2rad(double deg);
 double rad2deg(double rad);
+
+void draw(way* w);
+
+int distance(double lat1, double lon1, double lat2, double lon2, int zoom);
+int distanceNodes(node_t* n1, node_t* n2);
 int distanceCalculation(double lat1, double lon1, double lat2, double lon2);
 
-void draw(ways* way);
-
-void echanger(uint32_t *t, int i, int j);
-int partition(uint32_t *t, int deb, int fin);
-void tri_rapide_bis(uint32_t *t, int debut, int fin);
-void tri_rapide(uint32_t *t, int n);
-
 int naive(uint32_t id);
-int dichotomie(uint32_t id_a_trouver);
-
+int search_way_dicho(uint32_t val);
 
 #endif
 
