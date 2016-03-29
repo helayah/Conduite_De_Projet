@@ -7,11 +7,12 @@
 #include <string.h>
 #include <errno.h>
 #include <time.h>
+#include <stdbool.h>
 #include <inttypes.h>
 #include <sys/types.h>
 
-#define ENCODING "UTF-8"
 #define FAILURE -1
 #define SUCCESS 0
 
 #endif
+
