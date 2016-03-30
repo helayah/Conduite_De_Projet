@@ -128,17 +128,18 @@ void Root_Display()
 
 	printf("size_nodes = %d\n", pRoot->size_nodes);
 	printf("size_ways = %d\n", pRoot->size_ways);
-	for (i = 0; i < pRoot->size_nodes; i++)
+	
+	/*for (i = 0; i < pRoot->size_nodes; i++)
 	{
 		if(i == 20)
 			break;
-		/*if (pRoot->arrayNodes[i] != NULL)
-			Node_Display(pRoot->arrayNodes[i]);*/
-			
+		if (pRoot->arrayNodes[i] != NULL)
+			Node_Display(pRoot->arrayNodes[i]);
+		
 		if (pRoot->arrayWays[i] != NULL)
 			Way_Display(pRoot->arrayWays[i]);
 
-	}
+	}*/
 }
 
 void Node_Display(node_t* node)

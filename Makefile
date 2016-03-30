@@ -1,59 +1,53 @@
-CC = gcc
-CFLAGS = -Wall
-<<<<<<< HEAD
-#LFLAGS = `pkg-config --libs glib-2.0` -I/usr/include/libxml2  -lxml2 -L./lib -I./include -lSDL2 -lm
-LFLAGS = `pkg-config --libs glib-2.0` -I/usr/include/libxml2  -lxml2 -L./lib -I./include -lSDL2-2.0 -lm -lSDL2_gfx
-=======
-LFLAGS = `pkg-config --libs glib-2.0` -I/usr/include/libxml2  -lxml2 -L./lib -I./include -lSDL2 -lm
->>>>>>> origin/master
-EXEC = main
-HEADERS = $(wildcard *.h)
-OBJECTS = $(patsubst %.c, %.o, $(wildcard *.c))
+GCC 		= 	gcc
+CFLAGS 		= 	-Wall
+LFLAGS 		= 	`pkg-config --libs glib-2.0` -I/usr/include/libxml2 -lxml2 -L./lib -I./include -lSDL2-2.0 -lm -lSDL2_gfx
+EXEC 		= 	main
+#TEST		= 	main
+HEADERS 	= 	$(wildcard include/*.h)
+SOURCES		= 	$(wildcard *.c) \
+				$(wildcard src/*.c)
+OBJECTS 	= 	$(patsubst %.c, %.o, $(SOURCES))
+GARBAGES	= 	*.exe *.stackdump *~ *.*~ */*~ */*.*~ *.o
 
-all : $(EXEC)
 
-<<<<<<< HEAD
-$(EXEC) : main.o interface.o operation.o parser.o objs.o
-	$(CC) $(CFLAGS) -o $(EXEC) main.o interface.o operation.o parser.o objs.o $(LFLAGS)
-=======
-$(EXEC) : main.o interface.o draw.o parser.o objs.o
-	$(CC) $(CFLAGS) -o $(EXEC) main.o interface.o draw.o parser.o objs.o $(LFLAGS)
->>>>>>> origin/master
+all: $(EXEC) cleanobj
 
-interface.o : interface.c interface.h
-	$(CC) -o $@ -c $< $(LFLAGS)
-
-<<<<<<< HEAD
-operation.o : operation.c operation.h
-=======
-draw.o : draw.c draw.h
->>>>>>> origin/master
-	$(CC) -o $@ -c $< $(LFLAGS)
-
-objs.o : objs.c objs.h
-	$(CC) -o $@ -c $< $(LFLAGS)
-
-parser.o : parser.c parser.h
-	$(CC) -o $@ -c $< $(LFLAGS)
-
-main.o : main.c
-	$(CC) -o $@ -c $< $(LFLAGS)
-<<<<<<< HEAD
+run:
+	./main
 	
-run :
-	./$(EXEC) 01_denver_lafayette.osm
+vlg:
+	valgrind ./main
 
-test :
-	./$(EXEC) vosges.osm
+#$(EXEC): $(OBJECTS)
+#	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
+	
+$(EXEC): main.o objs.o parser.o map.o operations.o trie.o
+	$(CC) $(CFLAGS) -o $(EXEC) main.o parser.o objs.o map.o operations.o trie.o $(LFLAGS)
+	
+parser.o: src/parser.c include/parser.h
+	$(CC) -o $@ -c $< $(LFLAGS)
+	
+objs.o: src/objs.c include/objs.h
+	$(CC) -o $@ -c $< $(LFLAGS)
+	
+map.o: src/map.c include/map.h
+	$(CC) -o $@ -c $< $(LFLAGS)
+	
+operations.o: src/operations.c include/operations.h
+	$(CC) -o $@ -c $< $(LFLAGS)	
 
-valgd:
-	valgrind ./$(EXEC) 01_denver_lafayette.osm
+trie.o: src/trie.c include/trie.h
+	$(CC) -o $@ -c $< $(LFLAGS)	
 
-clean :
-	rm -f $(OBJECTS) $(EXEC) *.exe *.stackdump *~ *.*~
-=======
+main.o: main.c
+	$(CC) -o $@ -c $< $(LFLAGS)
 
+%.o: %.c $(HEADERS)
+	$(CC) $(CFLAGS) -c $< $(LFLAGS)
 
-clean :
-	rm -f $(OBJECTS) $(EXEC) *.exe *~ *.*~
->>>>>>> origin/master
+cleanobj:
+	rm -f $(OBJECTS) $(GARBAGES)
+
+clean: cleanobj
+	rm -f $(EXEC)
+

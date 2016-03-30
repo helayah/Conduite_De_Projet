@@ -12,6 +12,9 @@
 
 #define TILESIZE 		256
 
+#define ZOOM_MAX 		10
+#define ZOOM_MIN 		0
+
 typedef struct Map {
 	int width;
 	int height;
@@ -22,9 +25,12 @@ typedef struct Map {
 
 int Map_Init();
 void Map_Center(double lat, double lon);
+void Map_ZoomIn();
+void Map_ZoomOut();
 void Map_Render();
 void Map_Resize(int w, int h);
 void Map_UpdateBounds();
 void Map_Destroy();
 
 #endif
+

@@ -176,7 +176,7 @@ int Root_GetWays(xmlNodePtr node, int index_way, int index_ref)
 		if(!xmlStrcmp(node->name, (const xmlChar *) "nd") && !xmlStrcmp(node->parent->name, (const xmlChar *) "way"))
 		{
 			ref = xmlGetProp(node, (const xmlChar *) "ref");
-			
+	
 			rf = strtoul((const char *)ref, NULL, 0);
 			pRoot->arrayWays[index_way - 1]->ref[index_ref++] = rf;
 			
@@ -187,6 +187,8 @@ int Root_GetWays(xmlNodePtr node, int index_way, int index_ref)
 		{
 			k = xmlGetProp(node, (const xmlChar *) "k");
 			v = xmlGetProp(node, (const xmlChar *) "v");	
+			
+			pRoot->arrayWays[index_way - 1]->size--;
 			
 			if(!xmlStrcmp(k, (const xmlChar *) "building"))
 				pRoot->arrayWays[index_way - 1]->type = BUILDING;
@@ -213,3 +215,4 @@ int Root_GetWays(xmlNodePtr node, int index_way, int index_ref)
 	}
 	return SUCCESS;
 }
+

@@ -13,7 +13,7 @@ inline int mod(int x, int div);
 double deg2rad(double deg);
 double rad2deg(double rad);
 
-void draw(way* w);
+void draw(way* w, int zoom);
 
 int distance(double lat1, double lon1, double lat2, double lon2, int zoom);
 int distanceNodes(node_t* n1, node_t* n2);
