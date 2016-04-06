@@ -1,8 +1,8 @@
 GCC 		= 	gcc
 CFLAGS 		= 	-Wall
 LFLAGS 		= 	`pkg-config --libs glib-2.0` -I/usr/include/libxml2 -lxml2 -L./lib -I./include -lSDL2-2.0 -lm -lSDL2_gfx
+#LFLAGS 		= 	-Ilib `xml2-config --cflags` `xml2-config --libs` `sdl2-config --cflags` `sdl2-config --libs` -lSDL2_gfx -lm
 EXEC 		= 	main
-#TEST		= 	main
 HEADERS 	= 	$(wildcard include/*.h)
 SOURCES		= 	$(wildcard *.c) \
 				$(wildcard src/*.c)

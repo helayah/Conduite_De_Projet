@@ -12,6 +12,16 @@
 #define RAILWAY 	(1 << 6)
 #define BRIDGE 		(1 << 7)
 
+#define RIVER		(WATERWAY | (1 << 0))
+#define RIVERBANK	(WATERWAY | (1 << 1))
+
+#define PARK		(LEISURE | (1 << 0))
+#define GARDEN		(LEISURE | (1 << 1))
+
+#define ANYTHING	(1 << 8)
+
+
+
 typedef unsigned int type_t;
 
 typedef struct bound {
@@ -25,13 +35,15 @@ typedef struct way {
 	uint32_t id;
 	int size;
 	uint32_t* ref;
-	type_t type;
+	type_t type_primary;
+	type_t type_secondary;
 } way;
 
 typedef struct node_t {
 	uint32_t id;
 	double latitude;
 	double longitude;
+	type_t type;
 } node_t;
 
 typedef struct Root {

@@ -41,7 +41,7 @@ int parse(char* file)
 		return FAILURE;
 	}
 
-	if(Root_GetNodes(nodePtr, 0) == FAILURE)
+	if(Root_GetNodes(nodePtr, 0, 0) == FAILURE)
     {
 		//fprintf(stdout, "%s\n", ROOT_GET_FAILURE);
         xmlFreeDoc(doc);
@@ -113,12 +113,14 @@ int Root_GetSizeAndBound(xmlNodePtr node)
 	return FAILURE;
 }
 
-int Root_GetNodes(xmlNodePtr node, int index)
+int Root_GetNodes(xmlNodePtr node, int index, int tag)
 {
     xmlChar *idNode, *lat, *lon;
     node_t* n = NULL;
     double lt, ln;
     uint32_t id;
+    
+    int test = 0;
     
 	while(node != NULL)
     {	
@@ -139,10 +141,16 @@ int Root_GetNodes(xmlNodePtr node, int index)
 			xmlFree(lat);
 			xmlFree(lon);
 		}
+		
+		if(!xmlStrcmp(node->name, (const xmlChar *) "tag") && !xmlStrcmp(node->parent->name, (const xmlChar *) "node"))
+		{
+			if(pRoot->arrayNodes[index - 1]->type == UNKNOW)
+				pRoot->arrayNodes[index - 1]->type = ANYTHING;
+		}
 
 		if ((node->type == XML_ELEMENT_NODE) && (node->children != NULL))
 		{
-			Root_GetNodes(node->children, index);
+			Root_GetNodes(node->children, index, tag);
     	}
 		
         node = node->next;
@@ -191,16 +199,31 @@ int Root_GetWays(xmlNodePtr node, int index_way, int index_ref)
 			pRoot->arrayWays[index_way - 1]->size--;
 			
 			if(!xmlStrcmp(k, (const xmlChar *) "building"))
-				pRoot->arrayWays[index_way - 1]->type = BUILDING;
+				pRoot->arrayWays[index_way - 1]->type_primary = BUILDING;
 			
 			if(!xmlStrcmp(k, (const xmlChar *) "leisure"))
-				pRoot->arrayWays[index_way - 1]->type = LEISURE;
-			
+			{
+				pRoot->arrayWays[index_way - 1]->type_primary = LEISURE;
+				
+				if(!xmlStrcmp(v, (const xmlChar *) "park"))
+					pRoot->arrayWays[index_way - 1]->type_secondary = PARK;
+					
+				if(!xmlStrcmp(v, (const xmlChar *) "garden"))
+					pRoot->arrayWays[index_way - 1]->type_secondary = GARDEN;	
+			}
 			if(!xmlStrcmp(k, (const xmlChar *) "waterway"))
-				pRoot->arrayWays[index_way - 1]->type = WATERWAY;
+			{
+				pRoot->arrayWays[index_way - 1]->type_primary = WATERWAY;
+				
+				if(!xmlStrcmp(v, (const xmlChar *) "river"))
+					pRoot->arrayWays[index_way - 1]->type_secondary = RIVER;
+				
+				if(!xmlStrcmp(v, (const xmlChar *) "riverbank"))
+					pRoot->arrayWays[index_way - 1]->type_secondary = RIVERBANK;
+			}
 			
 			if(!xmlStrcmp(k, (const xmlChar *) "highway"))
-				pRoot->arrayWays[index_way - 1]->type = HIGHWAY;
+				pRoot->arrayWays[index_way - 1]->type_primary = HIGHWAY;
 			
 			xmlFree(k);
 			xmlFree(v);

@@ -30,8 +30,8 @@ int Map_Init()
 	pWindow = SDL_CreateWindow("MAP",
 	SDL_WINDOWPOS_CENTERED,
 	SDL_WINDOWPOS_CENTERED,
-	WINDOW_W,
-	WINDOW_H,
+	pMap->width,
+	pMap->height,
 	SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 
 	if (pWindow == NULL)
@@ -53,7 +53,7 @@ int Map_Init()
 		return FAILURE;
 	}
 	
-	SDL_SetRenderDrawColor(pRenderer, 255, 255, 255, 255);
+	SDL_SetRenderDrawColor(pRenderer, 221, 221, 221, 255);
 	SDL_RenderClear(pRenderer);
 	SDL_RenderPresent(pRenderer); 
 	
@@ -80,22 +80,22 @@ void Map_Loop()
 				//mousedown = false;
 				break;
 			case SDL_KEYDOWN:
-				switch(event.key.keysym.sym)
+				/*switch(event.key.keysym.sym)
 				{
 					case SDLK_ESCAPE:
 						return;
 					case SDLK_PLUS:
 					case SDLK_EQUALS:
-						/*Map_ZoomIn();
-						dirty = true;*/
+						Map_ZoomIn();
+						dirty = true;
 						break;
 					case SDLK_MINUS:
-						/*Map_ZoomOut();
-						dirty = true;*/
+						Map_ZoomOut();
+						dirty = true;
 						break;
-				}
+				}*/
 			case SDL_MOUSEWHEEL://TODO:non minimal
-				zoomdf += event.wheel.y;
+				/*zoomdf += event.wheel.y;
 				if(zoomdf >= 5)
 				{
 					zoomdf = 0;
@@ -108,29 +108,29 @@ void Map_Loop()
 						zoomdf = 0;
 						Map_ZoomOut();
 						dirty = true;
-					}
+					}*/
 				break;
 			case SDL_MOUSEMOTION: //TODO:non minimal
 				break;
 			case SDL_WINDOWEVENT:
-					switch(event.window.event)
+					/*switch(event.window.event)
 					{
 						case SDL_WINDOWEVENT_RESIZED:
 							//Map_Resize(event.window.data1, event.window.data2);
-							/*dirty = true;
-							Map_ZoomIn();*/
+							dirty = true;
+							Map_ZoomIn();
 							break;
 						case SDL_WINDOWEVENT_EXPOSED:
-							/*dirty = true;
-							Map_ZoomOut();*/
+							dirty = true;
+							Map_ZoomOut();
 							break;
-					}
+					}*/
 					break;
 			case SDL_QUIT:
 				return;
 		}
 		
-		if(dirty)
+		/*if(dirty)
 		{
 			SDL_SetRenderDrawColor(pRenderer, 255, 255, 255, 255);
 			SDL_RenderClear(pRenderer);
@@ -141,19 +141,9 @@ void Map_Loop()
 			}
 			SDL_RenderPresent(pRenderer);
 			dirty = false;
-		}
+		}*/
 
 	}
-}
-
-void Map_Center(double lat, double lon)
-{
-	double x, y;
-	
-	x = (lon + 180.0f) / 360.0f;
-	y = (1.0f - log(tan(lat * M_PI / 180.0f) + 1.0f / cos(lat * M_PI / 180.0f)) / M_PI) / 2.0f;
-	pMap->offsetx = x * (TILESIZE << pMap->zoom) - pMap->width / 2;
-	pMap->offsety = y * (TILESIZE << pMap->zoom) - pMap->height / 2;
 }
 
 void Map_ZoomIn()
@@ -170,31 +160,6 @@ void Map_ZoomOut()
 		return;
 		
 	pMap->zoom--;
-}
-
-void Map_Render()
-{
-	SDL_UpdateWindowSurface(pWindow);
-}
-
-void Map_Resize(int w, int h)
-{
-	pMap->offsetx += (pMap->width - w) / 2;
-	pMap->offsety += (pMap->height - h) / 2;
-
-	pMap->width = w;
-	pMap->height = h;
-}
-
-void Map_UpdateBounds()
-{
-	int maxy = (1 << pMap->zoom) * TILESIZE - pMap->height;
-	if(pMap->offsety < 0)
-		pMap->offsety = 0;
-	else if(pMap->offsety > maxy)
-		pMap->offsety = maxy;
-
-	pMap->offsetx = mod(pMap->offsetx, TILESIZE * (1 << pMap->zoom));
 }
 
 void Map_Destroy()

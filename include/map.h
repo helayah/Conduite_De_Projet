@@ -4,6 +4,7 @@
 #include "libs.h"
 #include "operations.h"
 #include <SDL2/SDL.h>
+#include <SDL2/SDL2_gfxPrimitives.h>
 
 #define WINDOW_W		800
 #define WINDOW_H		800
@@ -24,12 +25,8 @@ typedef struct Map {
 } Map;
 
 int Map_Init();
-void Map_Center(double lat, double lon);
 void Map_ZoomIn();
 void Map_ZoomOut();
-void Map_Render();
-void Map_Resize(int w, int h);
-void Map_UpdateBounds();
 void Map_Destroy();
 
 #endif

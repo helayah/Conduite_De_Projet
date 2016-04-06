@@ -49,7 +49,7 @@ int main(int argc, char** argv)
 
 	for(i = 0; i < pRoot->size_ways; i++)
 	{
-			draw(pRoot->arrayWays[i], pMap->zoom);
+			Draw(pRoot->arrayWays[i]);
 	}
 
 	SDL_RenderPresent(pRenderer);

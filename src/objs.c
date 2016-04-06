@@ -72,7 +72,8 @@ node_t* Node_Init(uint32_t id, double lat, double lon)
 	node->id = id;
 	node->latitude = lat;
 	node->longitude = lon;
-
+	node->type = UNKNOW;
+	
 	return node;
 }
 
@@ -89,7 +90,8 @@ way* Ways_Init(uint32_t id, int size)
 
 	w->id = id;
 	w->size = size;
-	w->type = UNKNOW;
+	w->type_primary = UNKNOW;
+	w->type_secondary = UNKNOW;
 	w->ref = malloc(size * sizeof(*w->ref));
 
 	if (w->ref == NULL)
@@ -156,7 +158,7 @@ void Way_Display(way* w)
 	printf("------------- Way -------------\n");
 	printf("id 	= %" PRId32 "\n", w->id);
 	printf("size_ref = %d\n", w->size);
-	printf("type 	= %d\n", w->type);
+	printf("type 	= %d\n", w->type_primary);
 	Ref_Display(w->ref, w->size);
 	printf("-------------------------------\n");
 }

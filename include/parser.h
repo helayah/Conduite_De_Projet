@@ -10,7 +10,7 @@
 
 int parse(char* file);
 int Root_GetSizeAndBound(xmlNodePtr node);
-int Root_GetNodes(xmlNodePtr node, int index);
+int Root_GetNodes(xmlNodePtr node, int index, int tag);
 int Root_GetWays(xmlNodePtr node, int index_way, int index_ref);
 
 #endif
