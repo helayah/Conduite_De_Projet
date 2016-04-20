@@ -4,6 +4,8 @@
 #include "trie.h"
 #include "errs.h"
 
+/*Modules externes*/
+
 #define LENGTH_PATH 256
 
 SDL_Window* pWindow = NULL;
